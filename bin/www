@@ -20,8 +20,8 @@ app.set('port', port);
  * Create HTTPS server.
  */
 var options = {
-  key: fs.readFileSync('./privatekey.pem'),
-  cert: fs.readFileSync('./certificate.pem')
+  key: fs.readFileSync('./2_www.dusky.xyz.key'),
+  cert: fs.readFileSync('./1_www.dusky.xyz_bundle.crt')
 };
 var server = https.createServer(options, app);
 

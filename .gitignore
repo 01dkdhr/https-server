@@ -6,6 +6,9 @@ yarn-error.log*
 local-config.json
 package-lock.json
 
+*.crt
+*.key
+
 # Editor directories and files
 .idea
 .vscode

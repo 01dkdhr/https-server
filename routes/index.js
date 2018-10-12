@@ -11,7 +11,7 @@ var router = express.Router();
         files.forEach((file) => {
             var serve = require(path.join(filePath, file));
             if (serve && serve.onRequest) {
-                router.get(`/micro-serves/${file}`, function(req, res, next) {
+                router.use(`/micro-serves/${file}`, function(req, res, next) {
                     serve.onRequest(req, res);
                 });
             }

@@ -1,10 +1,11 @@
 var path = require('path'),
     fs = require('fs'),
-    formidable = require('formidable');
+    formidable = require('formidable'),
+    savePath = path.join(__dirname, 'upload_files');
 
 module.exports = {
     onRequest(req, res) {
-        if (req.url == '/micro-serves/upload') {
+        if (req.url == '/') {
             res.writeHead(200, {'content-type': 'text/html'});
             res.end(
                 '<form action="upload/uploadfile" enctype="multipart/form-data" method="post">'+
@@ -13,12 +14,12 @@ module.exports = {
                 '<input type="submit" value="Upload">'+
                 '</form>'
             );
-        } else if (req.url == '/micro-serves/upload/uploadfile') {
+        } else if (req.url == '/uploadfile') {
             var form = new formidable.IncomingForm(),
             files = [],
             fields = [];
 
-            form.uploadDir = path.join(__dirname, 'upload_files');
+            form.uploadDir = savePath;
 
             form
                 .on('field', function(field, value) {
@@ -34,7 +35,7 @@ module.exports = {
                     // 重命名
                     files.forEach((item) => {
                         const file = item[1];
-                        var newPath = path.join(__dirname, file.name);
+                        var newPath = path.join(savePath, file.name);
                         if (fs.existsSync(newPath)) {
                             fs.unlinkSync(newPath);
                         }

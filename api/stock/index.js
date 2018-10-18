@@ -21,7 +21,6 @@ function responseSuccess(res, result) {
 module.exports = {
     onRequest(req, res) {
         if (req.url == '/stock-list') {
-            console.log('begin /stock-list');
             MongoUtil.getClient('node-stock')
             .then((client)=> {
                 const db = client.db('node-stock');
@@ -35,7 +34,6 @@ module.exports = {
                     }
 
                     MongoUtil.disConnect(client);
-                    console.log('success /stock-list');
                 });
             })
             .catch((err) => {

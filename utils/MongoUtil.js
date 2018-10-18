@@ -18,7 +18,7 @@ const MongoUtil = {
                     reject(`not find db ${dbName}`);
                 }
                 const url = `mongodb://${dbInfo.user}:${dbInfo.password}@${mongoConfig.host}:${mongoConfig.port}/${dbName}`;
-                MongoClient.connect(url, (err, client) => {
+                MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
                     if (err) {
                         reject(err);
                         return;

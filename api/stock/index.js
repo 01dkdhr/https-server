@@ -27,7 +27,7 @@ module.exports = {
                 const collection = db.collection('stocks');
                 collection.find({}).toArray((err, result) => {
                     if (err) {
-                        console.log('/stocl-list err:', err);
+                        console.log('/stock-list err:', err);
                         responseErr(res, 10002);
                     } else {
                         responseSuccess(res, JSON.stringify(result));
@@ -37,7 +37,7 @@ module.exports = {
                 });
             })
             .catch((err) => {
-                console.log('/stocl-list err:', err);
+                console.log('/stock-list err:', err);
                 responseErr(res, 10001);
             });
         } else {

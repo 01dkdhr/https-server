@@ -1,3 +1,4 @@
+const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 
 let mongoConfig = null;
@@ -12,7 +13,7 @@ const MongoUtil = {
     getClient(dbName) {
         return new Promise((resolve, reject) => {
             try {
-                const dbInfo = mongoConfig[dbName];
+                const dbInfo = mongoConfig['dbs'][dbName];
                 if (!dbInfo) {
                     reject(`not find db ${dbName}`);
                 }
@@ -40,4 +41,4 @@ const MongoUtil = {
     }
 };
 
-export default MongoUtil;
+module.exports = MongoUtil;

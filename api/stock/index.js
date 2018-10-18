@@ -1,6 +1,6 @@
-import MongoUtil from '../../utils/MongoUtil.js';
+const MongoUtil = require('../../utils/MongoUtil.js');
 
-function responseErr(errCode) {
+function responseErr(res, errCode) {
     res.writeHead(200, {'content-type': 'application/json'});
     res.end(JSON.stringify({
         err_code: errCode,
@@ -9,7 +9,7 @@ function responseErr(errCode) {
     }));    
 }
 
-function responseSuccess(result) {
+function responseSuccess(res, result) {
     res.writeHead(200, {'content-type': 'application/json'});
     res.end(JSON.stringify({
         err_code: 0,
@@ -20,7 +20,7 @@ function responseSuccess(result) {
 
 module.exports = {
     onRequest(req, res) {
-        if (req.url == '/stocl-list') {
+        if (req.url == '/stock-list') {
             MongoUtil.getClient('node-stock')
             .then((client)=> {
                 const db = client.db('node-stock');
@@ -28,9 +28,9 @@ module.exports = {
                 collection.find({}).toArray((err, result) => {
                     if (err) {
                         console.log('/stocl-list err:', err);
-                        responseErr(10002);
+                        responseErr(res, 10002);
                     } else {
-                        responseSuccess(JSON.stringify(result));
+                        responseSuccess(res, JSON.stringify(result));
                     }
 
                     MongoUtil.disConnect(client);
@@ -38,10 +38,10 @@ module.exports = {
             })
             .catch((err) => {
                 console.log('/stocl-list err:', err);
-                responseErr(10001);
+                responseErr(res, 10001);
             });
         } else {
-            responseErr(10000);
+            responseErr(res, 10000);
         }
     }
 };

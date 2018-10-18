@@ -21,23 +21,25 @@ function responseSuccess(res, result) {
 module.exports = {
     onRequest(req, res) {
         if (req.url == '/stock-list') {
+            console.log('begin /stock-list');
             MongoUtil.getClient('node-stock')
             .then((client)=> {
                 const db = client.db('node-stock');
                 const collection = db.collection('stocks');
                 collection.find({}).toArray((err, result) => {
                     if (err) {
-                        console.log('/stocl-list err:', err);
+                        console.log('/stock-list err:', err);
                         responseErr(res, 10002);
                     } else {
                         responseSuccess(res, JSON.stringify(result));
                     }
 
                     MongoUtil.disConnect(client);
+                    console.log('success /stock-list');
                 });
             })
             .catch((err) => {
-                console.log('/stocl-list err:', err);
+                console.log('/stock-list err:', err);
                 responseErr(res, 10001);
             });
         } else {

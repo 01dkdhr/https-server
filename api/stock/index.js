@@ -1,7 +1,7 @@
 const MongoUtil = require('../../utils/MongoUtil.js');
 
 function responseErr(res, errCode) {
-    res.writeHead(200, {'content-type': 'application/json'});
+    res.writeHead(200, {'content-type': 'application/json', "Access-Control-Allow-Origin": "*"});
     res.end(JSON.stringify({
         err_code: errCode,
         msg: "server error",
@@ -10,7 +10,7 @@ function responseErr(res, errCode) {
 }
 
 function responseSuccess(res, result) {
-    res.writeHead(200, {'content-type': 'application/json'});
+    res.writeHead(200, {'content-type': 'application/json', "Access-Control-Allow-Origin": "*"});
     res.end(JSON.stringify({
         err_code: 0,
         msg: "",

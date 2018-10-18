@@ -25,7 +25,7 @@ module.exports = {
             .then((client)=> {
                 const db = client.db('node-stock');
                 const collection = db.collection('stocks');
-                collection.find({}, {"_id": 0}).toArray((err, result) => {
+                collection.find({}, { projection: {"_id": 0} }).toArray((err, result) => {
                     if (err) {
                         console.log('/stock-list err:', err);
                         responseErr(res, 10002);

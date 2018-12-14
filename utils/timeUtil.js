@@ -56,10 +56,15 @@ module.exports = {
       filter: { pretrade_date: formatDay } 
     });
 
-    if (result && result.length && result[0].is_open) {
-      return result[0].cal_date;  
-    } else if (result && result.length && !result[0].is_open) {
-      return await this.nextTradeDay(result[0].cal_date);
+    if (result && result.length) {
+      let num = parseInt(result[0].cal_date);
+      for (let i = 1; i < result.length; ++i) {
+        if (parseInt(result[i].cal_date) > num) {
+          num = parseInt(result[i].cal_date);  
+        }
+      }
+
+      return num + '';
     } else {
       return formatDay;
     }

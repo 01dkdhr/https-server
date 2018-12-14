@@ -102,7 +102,6 @@ module.exports = {
             collection.find({ ts_code }).toArray((err, result) => {
               if (err || !result || !result.length || !result[0].data) {
                 console.log('/stock-list err:', err);
-                console.log(JSON.stringify(result))
                 responseErr(res, 10002);
               } else {
                 responseSuccess(res, result[0].data);

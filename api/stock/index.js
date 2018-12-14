@@ -104,6 +104,33 @@ module.exports = {
                 console.log('/stk-tick err:', err);
                 responseErr(res, 10002);
               } else {
+                const time_filter = req.query && req.query.time_filter || '';
+                if (time_filter) {
+                  try {
+                    const filter = JSON.parse(time_filter);
+                    const len = filter.length;
+                    if (len) {
+                      const dataArr = result[0].data.split('\r\n');
+                      const result = [];
+
+                      dataArr.forEach((item) => {
+                        for (let i = 0; i < len; ++i) {
+                          if (item.indexOf(filter[i]) >= 0) {
+                            result.push(item);
+                            break;
+                          }
+                        }
+                      });
+
+                      responseSuccess(res, JSON.stringify(result));
+                      return;
+                    }
+                  } catch (err) {
+                    responseErr(res, 10002);
+                    return;
+                  }
+                } 
+
                 responseSuccess(res, result[0].data);
               }
 

@@ -107,6 +107,7 @@ module.exports = {
                 const time_filter = req.query && req.query.time_filter || '';
                 if (time_filter) {
                   try {
+                    console.log(decodeURIComponent(time_filter));
                     const filter = JSON.parse(decodeURIComponent(time_filter));
                     const len = filter.length;
                     if (len) {
@@ -126,6 +127,7 @@ module.exports = {
                       return;
                     }
                   } catch (err) {
+                    console.log('/stk-tick err:', err);
                     responseErr(res, 10002);
                     return;
                   }

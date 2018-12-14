@@ -75,7 +75,7 @@ module.exports = {
 
           responseSuccess(res, result[0].data);
         }
-      } else if (req.path == '/trade-day') {
+      } else if (req.path == '/trade-date') {
         let date = await timeUtil.recentTradeDay(req.query && req.query.date || timeUtil.todayStr());
         const type = req.query && req.query.type || '';
         if (type == 'pre') {

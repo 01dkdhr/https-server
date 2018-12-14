@@ -122,7 +122,7 @@ module.exports = {
                         }
                       });
 
-                      responseSuccess(res, JSON.stringify(result));
+                      responseSuccess(res, result.join('\r\n'));
                       return;
                     }
                   } catch (err) {

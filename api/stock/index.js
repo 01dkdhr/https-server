@@ -100,7 +100,7 @@ module.exports = {
             const db = client.db('node-stock');
             const collection = db.collection(`stk_tick_${date}`);
             collection.find({ ts_code }).toArray((err, result) => {
-              if (err || !result || !result.length || !result.length[0].data) {
+              if (err || !result || !result.length || !result[0].data) {
                 console.log('/stock-list err:', err);
                 responseErr(res, 10002);
               } else {

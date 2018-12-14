@@ -1,4 +1,5 @@
 const MongoUtil = require('../../utils/MongoUtil.js');
+const timeUtil = require('../../utils/timeUtil.js');
 
 function responseErr(res, errCode, msg) {
   res.writeHead(200, { 'content-type': 'application/json', "Access-Control-Allow-Origin": "*" });
@@ -21,73 +22,7 @@ function responseSuccess(res, result) {
 module.exports = {
   onRequest(req, res) {
     try {
-      if (req.path == '/stock-list') {
-        MongoUtil.getClient('node-stock')
-          .then((client) => {
-            const db = client.db('node-stock');
-            const collection = db.collection('stocks');
-            collection.find({}, { projection: { "_id": 0, "price_tick": 0, "delisted_data": 0, "sec_type": 0 } }).toArray((err, result) => {
-              if (err) {
-                console.log('/stock-list err:', err);
-                responseErr(res, 10002);
-              } else {
-                responseSuccess(res, JSON.stringify(result));
-              }
-
-              MongoUtil.disConnect(client);
-            });
-          })
-          .catch((err) => {
-            console.log('/stock-list err:', err);
-            responseErr(res, 10001);
-          });
-      } else if (req.path == '/daily-stock') {
-        const symbol = req.query && req.query.symbol || '';
-        if (!symbol) {
-          responseErr(res, 10001);
-          return;
-        }
-        MongoUtil.getClient('node-stock')
-          .then((client) => {
-            const db = client.db('node-stock');
-
-            // 从stocks里查询stock信息
-            const p1 = new Promise((resolve, reject) => {
-              db.collection('stocks').findOne({ "symbol": symbol }, (err, result) => {
-                if (err || !result) {
-                  reject(err);
-                  return;
-                }
-
-                resolve(result);
-              });
-            });
-
-            // 从daily-stocks里查询stock信息
-            const p2 = new Promise((resolve, reject) => {
-              db.collection('daily-stocks').findOne({ "symbol": symbol }, (err, result) => {
-                if (err || !result || !result.data) {
-                  reject(err);
-                  return;
-                }
-
-                resolve(result.data);
-              });
-            });
-
-            return Promise.all([p1, p2]);
-          })
-          .then((result) => {
-            responseSuccess(res, JSON.stringify({
-              info: result[0],
-              data: result[1]
-            }));
-          })
-          .catch((err) => {
-            console.log('/stock-list err:', err);
-            responseErr(res, 10001);
-          });
-      } else if (req.path == '/stk-tick') {
+      if (req.path == '/stk-tick') {
         // {
         //   ts_code: "000001.SZ",
         //   date: "20181213",
@@ -100,53 +35,56 @@ module.exports = {
           return;
         }
 
-        MongoUtil.getClient('tushare-stock')
-          .then((client) => {
-            const db = client.db('tushare-stock');
-            const collection = db.collection(`stk_tick_${date}`);
-            collection.find({ ts_code }).toArray((err, result) => {
-              if (err || !result || !result.length || !result[0].data) {
-                console.log('/stk-tick err:', err);
-                responseErr(res, 10002);
-              } else {
-                const time_filter = req.query && req.query.time_filter || '';
-                if (time_filter) {
-                  try {
-                    const filter = JSON.parse(decodeURIComponent(time_filter));
-                    const len = filter.length;
-                    if (len) {
-                      const dataArr = result[0].data.split('\r\n');
-                      const newResult = [];
+        const result = await MongoUtil.getDatas({
+          dbName: 'tushare-stock',
+          tableName: `stk_tick_${date}`,
+          filter: { ts_code } 
+        });
 
-                      dataArr.forEach((item) => {
-                        for (let i = 0; i < len; ++i) {
-                          if (item.indexOf(filter[i]) >= 0) {
-                            newResult.push(item);
-                            break;
-                          }
-                        }
-                      });
+        if (err || !result || !result.length || !result[0].data) {
+          console.log('/stk-tick err:', err);
+          responseErr(res, 10002);
+        } else {
+          const time_filter = req.query && req.query.time_filter || '';
+          if (time_filter) {
+            try {
+              const filter = JSON.parse(decodeURIComponent(time_filter));
+              const len = filter.length;
+              if (len) {
+                const dataArr = result[0].data.split('\r\n');
+                const newResult = [];
 
-                      responseSuccess(res, newResult.join('\r\n'));
-                      return;
+                dataArr.forEach((item) => {
+                  for (let i = 0; i < len; ++i) {
+                    if (item.indexOf(filter[i]) >= 0) {
+                      newResult.push(item);
+                      break;
                     }
-                  } catch (err) {
-                    console.log('/stk-tick err:', err);
-                    responseErr(res, 10002);
-                    return;
                   }
-                } 
+                });
 
-                responseSuccess(res, result[0].data);
+                responseSuccess(res, newResult.join('\r\n'));
+                return;
               }
+            } catch (err) {
+              console.log('/stk-tick err:', err);
+              responseErr(res, 10002);
+              return;
+            }
+          } 
 
-              MongoUtil.disConnect(client);
-            });
-          })
-          .catch((err) => {
-            console.log('/stock-list err:', err);
-            responseErr(res, 10001);
-          });
+          responseSuccess(res, result[0].data);
+        }
+      } else if (req.path == '/trade-day') {
+        let date = await timeUtil.recentTradeDay(req.query && req.query.date || timeUtil.todayStr());
+        const type = req.query && req.query.type || '';
+        if (type == 'pre') {
+          date = await timeUtil.preTradeDay(date);
+        } else if (type == 'next') {
+          date = await timeUtil.nextTradeDay(date);  
+        }
+
+        responseSuccess(res, date);
       } else {
         responseErr(res, 10000);
       }

@@ -112,18 +112,18 @@ module.exports = {
                     const len = filter.length;
                     if (len) {
                       const dataArr = result[0].data.split('\r\n');
-                      const result = [];
+                      const newResult = [];
 
                       dataArr.forEach((item) => {
                         for (let i = 0; i < len; ++i) {
                           if (item.indexOf(filter[i]) >= 0) {
-                            result.push(item);
+                            newResult.push(item);
                             break;
                           }
                         }
                       });
 
-                      responseSuccess(res, result.join('\r\n'));
+                      responseSuccess(res, newResult.join('\r\n'));
                       return;
                     }
                   } catch (err) {

@@ -20,7 +20,7 @@ function responseSuccess(res, result) {
 }
 
 module.exports = {
-  onRequest(req, res) {
+  async onRequest(req, res) {
     try {
       if (req.path == '/stk-tick') {
         // {

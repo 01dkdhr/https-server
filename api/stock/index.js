@@ -41,8 +41,8 @@ module.exports = {
           filter: { ts_code } 
         });
 
-        if (err || !result || !result.length || !result[0].data) {
-          console.log('/stk-tick err:', err);
+        if (!result || !result.length || !result[0].data) {
+          console.log('/stk-tick err: result is empty');
           responseErr(res, 10002);
         } else {
           const time_filter = req.query && req.query.time_filter || '';

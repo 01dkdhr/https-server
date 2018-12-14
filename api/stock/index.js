@@ -88,6 +88,11 @@ module.exports = {
             responseErr(res, 10001);
           });
       } else if (req.path == '/stk-tick') {
+        // {
+        //   ts_code: "000001.SZ",
+        //   date: "20181213",
+        //   time_filter: encodeURIComponent(JSON.stringify([" 09:1", " 09:2", " 09:3", " 09:40"]))
+        // }
         const ts_code = req.query && req.query.ts_code || '';
         const date = req.query && req.query.date || '';
         if (!ts_code || !date) {
@@ -107,7 +112,6 @@ module.exports = {
                 const time_filter = req.query && req.query.time_filter || '';
                 if (time_filter) {
                   try {
-                    console.log(decodeURIComponent(time_filter));
                     const filter = JSON.parse(decodeURIComponent(time_filter));
                     const len = filter.length;
                     if (len) {

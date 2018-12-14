@@ -2,7 +2,7 @@ const MongoUtil = require('./MongoUtil.js');
 
 const oneDayLong = 24*60*60*1000;
 
-const timeUtil = {
+module.exports = {
   getDateFromStr(formatDay) {
     const year = parseInt(formatDay.slice(0, 4));
     const month = parseInt(formatDay.slice(4, 6));
@@ -83,5 +83,3 @@ const timeUtil = {
     return `${year}${month < 10 ? ('0' + month) : (month)}${day < 10 ? ('0' + day) : (day)}`
   }
 };
-
-export default timeUtil;

@@ -56,8 +56,10 @@ module.exports = {
       filter: { pretrade_date: formatDay } 
     });
 
-    if (result && result.length) {
+    if (result && result.length && result[0].is_open) {
       return result[0].cal_date;  
+    } else if (result && result.length && !result[0].is_open) {
+      return await this.nextTradeDay(result[0].cal_date);
     } else {
       return formatDay;
     }

@@ -107,7 +107,7 @@ module.exports = {
                 const time_filter = req.query && req.query.time_filter || '';
                 if (time_filter) {
                   try {
-                    const filter = JSON.parse(time_filter);
+                    const filter = JSON.parse(decodeURIComponent(time_filter));
                     const len = filter.length;
                     if (len) {
                       const dataArr = result[0].data.split('\r\n');

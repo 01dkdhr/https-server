@@ -11,8 +11,10 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "lodash": "^4.17.11",
     "mongodb": "^3.1.8",
     "morgan": "~1.9.0",
+    "request": "^2.88.0",
     "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
